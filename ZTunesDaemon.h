@@ -1,5 +1,5 @@
 #import <Cocoa/Cocoa.h>
-#import "iTunesProxy.h"
+#import "PlayerProxy.h"
 
 @interface ZTunesDaemon : NSObject {
     IBOutlet NSTextField *i_album;
@@ -10,8 +10,9 @@
     IBOutlet NSWindow *i_window;
 	IBOutlet NSTextField *i_volume;
 	
-	iTunesProxy * m_proxy;
+	PlayerProxy * currentProxy;
 }
+@property (readonly) PlayerProxy * proxy;
 - (IBAction)fastForward:(id)sender;
 - (IBAction)playpause:(id)sender;
 - (IBAction)rewind:(id)sender;

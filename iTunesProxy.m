@@ -7,162 +7,83 @@
 //
 
 #import "iTunesProxy.h"
+#import "SingletonHelper.h"
+
 static iTunesProxy *sharediTunesProxy = nil;
 
 @implementation iTunesProxy
  
-+ (iTunesProxy*)sharedProxy
-{
-    @synchronized(self) {
-        if (sharediTunesProxy == nil) {
-            [[self alloc] init]; // assignment not done here
-        }
-    }
-    return sharediTunesProxy;
-}
- 
-+ (id)allocWithZone:(NSZone *)zone
-{
-    @synchronized(self) {
-        if (sharediTunesProxy == nil) {
-            sharediTunesProxy = [super allocWithZone:zone];
-            return sharediTunesProxy;  // assignment and return on first allocation
-        }
-    }
-    return nil; //on subsequent allocation attempts return nil
-}
- 
-- (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
- 
-- (id)retain
-{
-    return self;
-}
- 
-- (unsigned)retainCount
-{
-    return UINT_MAX;  //denotes an object that cannot be released
-}
- 
-- (void)release
-{
-    //do nothing
-}
- 
-- (id)autorelease
-{
-    return self;
-}
+SINGLETON_IMPS(iTunesProxy,sharedProxy)
 
 - (id)init {
 	[super init];
 	
 	if(self) {
-		m_sPlay = [self script:@"tell application \"Spotify\" to play"];
-		m_sPause = [self script:@"tell application \"Spotify\" to pause"];
-		m_sPlayPause = [self script:@"tell application \"Spotify\" to playpause"];
-		m_sNextTrack = [self script:@"tell application \"Spotify\" to next track"];
-		m_sPrevTrack = [self script:@"tell application \"Spotify\" to previous track"];
-		m_sFastForward = [self script:@"tell application \"Spotify\" to fast forward"];
-		m_sRewind = [self script:@"tell application \"Spotify\" to rewind"];
-		m_sResume = [self script:@"tell application \"Spotify\" to resume"];
-		
-		m_sGetVolume = [self script:@"tell application \"Spotify\" to get the sound volume of application \"Spotify\""];
-		
-		m_sCurrentTrackName = [self script:@"tell application \"Spotify\" to get name of the current track in application \"Spotify\""];
-		m_sCurrentTrackArtist = [self script:@"tell application \"Spotify\" to get artist of the current track in application \"Spotify\""];
-		m_sCurrentTrackAlbum = [self script:@"tell application \"Spotify\" to get album of the current track in application \"Spotify\""];
-		m_sCurrentTrackRating = [self script:@"tell application \"Spotify\" to get rating of the current track in application \"Spotify\""];
+		self.app = [SBApplication applicationWithBundleIdentifier:@"com.apple.itunes"];
 	}
+	
 	return self;
 }
 
-- (void)play {
-	[m_sPlay executeAndReturnError:nil];
-}
-
-- (void)pause {
-	[m_sPause executeAndReturnError:nil];
+- (iTunesApplication *)iTunes {
+	return (iTunesApplication *)self.app;
 }
 
 - (void)playpause {
-	[m_sPlayPause executeAndReturnError:nil];
+	[self.iTunes playpause];
+}
+
+- (void)stop {
+	[self.iTunes stop];
 }
 
 - (void)nextTrack {
-	[m_sNextTrack executeAndReturnError:nil];
+	[self.iTunes nextTrack];
 }
 
 - (void)prevTrack {
-	[m_sPrevTrack executeAndReturnError:nil];
+	[self.iTunes previousTrack];
 }
 
 - (void)fastForward {
-	[m_sFastForward executeAndReturnError:nil];
+	[self.iTunes fastForward];
+}
+- (void)rewind {
+	[self.iTunes rewind];
 }
 
-- (void)rewind {
-	[m_sRewind executeAndReturnError:nil];
+- (BOOL)playing {
+	return [self.iTunes playerState] == iTunesEPlSPlaying;
 }
+
+
 
 - (BOOL)running {
-	NSWorkspace * ws = [NSWorkspace sharedWorkspace];
-	
-	NSArray *runningApps = [ws launchedApplications];
-	NSEnumerator * en = [runningApps objectEnumerator];
-	NSDictionary * d;
-	
-	while(d = [en nextObject]) {
-		if([[d objectForKey:@"NSApplicationBundleIdentifier"] isEqualToString:@"com.apple.iTunes"]) {
-			return YES;
-		}
-	}
-	return NO;
+	return [self.iTunes isRunning];
 }
 
 - (int)volume {
-	return [[m_sGetVolume executeAndReturnError:nil] int32Value];
+	return [self.iTunes soundVolume];
 }
-
 - (void)setVolume:(int)vol {
-	[[[[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:@"tell application \"Spotify\" to set the sound volume in application \"SpotifyS\" to %i",vol]] autorelease] executeAndReturnError:nil];
+	self.iTunes.soundVolume = vol;
 }
 
 - (NSString *)currentTrackName {
-	return [[m_sCurrentTrackName executeAndReturnError:nil] stringValue];
+	return self.iTunes.currentTrack.name;
 }
 
 - (NSString *)currentTrackArtist {
-	return [[m_sCurrentTrackArtist executeAndReturnError:nil] stringValue];
+	return self.iTunes.currentTrack.artist;
 }
-
 - (NSString *)currentTrackAlbum {
-	return [[m_sCurrentTrackAlbum executeAndReturnError:nil] stringValue];
+	return self.iTunes.currentTrack.album;
 }
-
 - (int)currentTrackRating {
-	return ([[m_sCurrentTrackRating executeAndReturnError:nil] int32Value])/20;
+	return self.iTunes.currentTrack.rating;
 }
-
 - (void)setCurrentTrackRating:(int)rating {
-	[[[[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:@"tell application \"Spotify\" to set rating of the current track in application \"SpotifyS\" to %i",rating*20]] autorelease] executeAndReturnError:nil];
-}
-
-
-- (NSAppleScript *)script:(NSString *)source {
-	NSAppleScript * r = [[[NSAppleScript alloc] initWithSource:source] autorelease];
-	
-	NSDictionary * errors;
-	
-	if(![r compileAndReturnError:&errors]) {
-		NSLog(@"Could not compile script: %@.  Errors: %@",source,errors);
-		return nil;
-	}
-	
-	return [r retain];
+	self.iTunes.currentTrack.rating = rating;
 }
 
 @end

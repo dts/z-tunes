@@ -1,34 +1,69 @@
 #import "ZTunesDaemon.h"
+#import "PlayerProxy.h"
+#import "iTunesProxy.h"
+#import "SpotifyProxy.h"
 
 @implementation ZTunesDaemon
-- (void)awakeFromNib {
-	m_proxy = [iTunesProxy sharedProxy];
+
+- (PlayerProxy *)proxy {
+	if(!currentProxy.running) {
+		PlayerProxy * iTunes = [iTunesProxy sharedProxy];
+		PlayerProxy * Spotify = [SpotifyProxy sharedProxy];
+		
+		if(!iTunes.running && !Spotify.running)
+			// Neither is running
+			return currentProxy = iTunes;
+		if(iTunes.running && !Spotify.running)
+			// iTunes is running
+			return currentProxy = iTunes;
+		if(!iTunes.running && Spotify.running)
+			// Spotify is running
+			return currentProxy = Spotify;
+		
+		// Both are running!
+		
+		if(iTunes.playing && !Spotify.playing)
+			// iTunes is playing, spotify is not
+			return currentProxy = iTunes;
+		if(!iTunes.playing && Spotify.playing)
+			// Spotify is playing, iTUnes is not
+			return currentProxy = Spotify;
+		
+		// Both are playing!
+		
+		[iTunes stop];
+		[Spotify stop];
+		
+		return currentProxy = iTunes;
+	}
+	
+	return currentProxy;
 }
 
 - (IBAction)fastForward:(id)sender {
-    [m_proxy fastForward];
+    [self.proxy fastForward];
 }
 
 - (IBAction)playpause:(id)sender {
-	[m_proxy playpause];
+	[self.proxy playpause];
 }
 
 - (IBAction)rewind:(id)sender {
-	[m_proxy rewind];
+	[self.proxy rewind];
 }
 
 - (IBAction)skipBackward:(id)sender {
-    [m_proxy prevTrack];
+    [self.proxy prevTrack];
 	[self refresh];
 }
 
 - (IBAction)skipForward:(id)sender {
-    [m_proxy nextTrack];
+    [self.proxy nextTrack];
 	[self refresh];
 }
 
 - (IBAction)setRating:(id)sender {
-	[m_proxy setCurrentTrackRating:[i_rating intValue]];
+	[self.proxy setCurrentTrackRating:[i_rating intValue]];
 	[self refresh];
 }
 
@@ -41,29 +76,29 @@
 }
 
 - (IBAction)volumeUp:(id)sender {
-	[m_proxy setVolume:[i_volume intValue]+10];
+	[self.proxy setVolume:[i_volume intValue]+10];
 	[self refresh];
 }
 
 - (IBAction)volumeDown:(id)sender {
-	[m_proxy setVolume:[i_volume intValue]-10];
+	[self.proxy setVolume:[i_volume intValue]-10];
 	[self refresh];
 }
 
 - (void)refresh {
-	if(![m_proxy running]) return;
-	NSString * track = [m_proxy currentTrackName];
-	NSString * album = [m_proxy currentTrackAlbum];
-	NSString * artist = [m_proxy currentTrackArtist];
+	if(![self.proxy running]) return;
+	NSString * track = [self.proxy currentTrackName];
+	NSString * album = [self.proxy currentTrackAlbum];
+	NSString * artist = [self.proxy currentTrackArtist];
 	[i_title setStringValue:track?track:@""];
 	[i_artist setStringValue:artist?[NSString stringWithFormat:@"by: %@",artist]:@""];
 	[i_album setStringValue:album?[NSString stringWithFormat:@"on: %@",album]:@""];
-	[i_rating setIntValue:[m_proxy currentTrackRating]];
-	[i_volume setStringValue:[NSString stringWithFormat:@"%i%%",[m_proxy volume]]];
+	[i_rating setIntValue:[self.proxy currentTrackRating]];
+	[i_volume setStringValue:[NSString stringWithFormat:@"%i%%",[self.proxy volume]]];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)note {
-	NSLog(@"windowDidBecomeMain: %@",[m_proxy currentTrackAlbum]);
+	NSLog(@"windowDidBecomeMain: %@",[self.proxy currentTrackAlbum]);
 	
 	[self refresh];
 }
@@ -73,13 +108,13 @@
 	int rating = [[e charactersIgnoringModifiers] intValue];
 	
 	if([e keyCode] == 124) {
-		[m_proxy nextTrack];
+		[self.proxy nextTrack];
 	}
 	else if([e keyCode] == 123) {
-		[m_proxy prevTrack];
+		[self.proxy prevTrack];
 	}
 	else if([e keyCode] == 36) {
-		[m_proxy playpause];
+		[self.proxy playpause];
 	}
 	else if([e keyCode] == 126) {
 		[self volumeUp:self];
@@ -87,9 +122,12 @@
 	else if([e keyCode] == 125) {
 		[self volumeDown:self];
 	}
-	else if(rating >= 0 && rating <= 5) {
-		[m_proxy setCurrentTrackRating:rating];
+	else if([e keyCode] == 14) {
+		[self.proxy quit];
 	}
+	else if(rating >= 0 && rating <= 5) {
+		[self.proxy setCurrentTrackRating:rating];
+	} 
 	
 	[self refresh];
 }

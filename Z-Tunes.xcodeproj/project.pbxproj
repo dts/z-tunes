@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1D358B0E0D08B91F00D71A7E /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DB418BE0D052E3A009213BF /* Carbon.framework */; };
+		1D7C8F24147AF44300751FAB /* PlayerProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D7C8F23147AF44300751FAB /* PlayerProxy.m */; };
+		1D7C8F27147AF4FF00751FAB /* SpotifyProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D7C8F26147AF4FF00751FAB /* SpotifyProxy.m */; };
+		1D7C8F2A147AF8EC00751FAB /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D7C8F29147AF8EC00751FAB /* ScriptingBridge.framework */; };
+		1D7C8F2D147AF9A600751FAB /* iTunes.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D7C8F2B147AF9A600751FAB /* iTunes.h */; };
+		1D7C8F2E147AF9A600751FAB /* Spotify.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D7C8F2C147AF9A600751FAB /* Spotify.h */; };
 		1D80EDD70D03345F006B1EC3 /* ZTunesDaemon.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D80EDD60D03345F006B1EC3 /* ZTunesDaemon.m */; };
 		1D80EDD90D033495006B1EC3 /* Z_TunesDaemon.nib in Resources */ = {isa = PBXBuildFile; fileRef = 1D80EDD80D033495006B1EC3 /* Z_TunesDaemon.nib */; };
 		1D80EDDE0D033F54006B1EC3 /* ZTunesWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D80EDDD0D033F54006B1EC3 /* ZTunesWindow.m */; };
@@ -70,6 +75,14 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1D7C8F22147AF44300751FAB /* PlayerProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerProxy.h; sourceTree = "<group>"; };
+		1D7C8F23147AF44300751FAB /* PlayerProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerProxy.m; sourceTree = "<group>"; };
+		1D7C8F25147AF4FF00751FAB /* SpotifyProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpotifyProxy.h; sourceTree = "<group>"; };
+		1D7C8F26147AF4FF00751FAB /* SpotifyProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpotifyProxy.m; sourceTree = "<group>"; };
+		1D7C8F28147AF5C900751FAB /* SingletonHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingletonHelper.h; sourceTree = "<group>"; };
+		1D7C8F29147AF8EC00751FAB /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = ../../../System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<group>"; };
+		1D7C8F2B147AF9A600751FAB /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
+		1D7C8F2C147AF9A600751FAB /* Spotify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spotify.h; sourceTree = "<group>"; };
 		1D80EDCF0D033406006B1EC3 /* Z-TunesDaemon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Z-TunesDaemon.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D80EDD10D033406006B1EC3 /* Z-TunesDaemon-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Z-TunesDaemon-Info.plist"; sourceTree = "<group>"; };
 		1D80EDD50D03345F006B1EC3 /* ZTunesDaemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTunesDaemon.h; sourceTree = "<group>"; };
@@ -120,6 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1DB418BF0D052E3A009213BF /* Carbon.framework in Frameworks */,
+				1D7C8F2A147AF8EC00751FAB /* ScriptingBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +196,7 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1D7C8F29147AF8EC00751FAB /* ScriptingBridge.framework */,
 				1DB418BE0D052E3A009213BF /* Carbon.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
 				F506C035013D953901CA16C8 /* PreferencePanes.framework */,
@@ -220,12 +235,19 @@
 		1D80EDC80D0333CB006B1EC3 /* Daemon */ = {
 			isa = PBXGroup;
 			children = (
+				1D7C8F2B147AF9A600751FAB /* iTunes.h */,
+				1D7C8F2C147AF9A600751FAB /* Spotify.h */,
 				1D80EDD50D03345F006B1EC3 /* ZTunesDaemon.h */,
 				1D80EDD60D03345F006B1EC3 /* ZTunesDaemon.m */,
 				1D80EDDC0D033F54006B1EC3 /* ZTunesWindow.h */,
 				1D80EDDD0D033F54006B1EC3 /* ZTunesWindow.m */,
+				1D7C8F28147AF5C900751FAB /* SingletonHelper.h */,
+				1D7C8F22147AF44300751FAB /* PlayerProxy.h */,
+				1D7C8F23147AF44300751FAB /* PlayerProxy.m */,
 				1DCAA0690D03887F00E4FE11 /* iTunesProxy.h */,
 				1DCAA06A0D03887F00E4FE11 /* iTunesProxy.m */,
+				1D7C8F25147AF4FF00751FAB /* SpotifyProxy.h */,
+				1D7C8F26147AF4FF00751FAB /* SpotifyProxy.m */,
 				1DCAA0B50D03D41C00E4FE11 /* ZTunesApp.m */,
 				1DCAA16D0D03EED900E4FE11 /* ZApplication.h */,
 				1DCAA16E0D03EED900E4FE11 /* ZApplication.m */,
@@ -294,6 +316,8 @@
 				1DD18EF30D0758BF00D64613 /* PTKeyCodeTranslator.h in Headers */,
 				1DD18EF50D0758BF00D64613 /* PTKeyCombo.h in Headers */,
 				1DD18EF70D0758BF00D64613 /* PTKeyComboPanel.h in Headers */,
+				1D7C8F2D147AF9A600751FAB /* iTunes.h in Headers */,
+				1D7C8F2E147AF9A600751FAB /* Spotify.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +430,8 @@
 				1DCAA06B0D03887F00E4FE11 /* iTunesProxy.m in Sources */,
 				1DCAA0B60D03D41C00E4FE11 /* ZTunesApp.m in Sources */,
 				1DCAA16F0D03EED900E4FE11 /* ZApplication.m in Sources */,
+				1D7C8F24147AF44300751FAB /* PlayerProxy.m in Sources */,
+				1D7C8F27147AF4FF00751FAB /* SpotifyProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +585,8 @@
 		1DBD214D08BA80EA00186707 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -569,8 +597,8 @@
 		1DBD214E08BA80EA00186707 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
