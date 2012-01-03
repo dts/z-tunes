@@ -6,7 +6,7 @@
 @implementation ZTunesDaemon
 
 - (PlayerProxy *)proxy {
-	if(!currentProxy.running) {
+	if(!currentProxy.running || !currentProxy.playing) {
 		PlayerProxy * iTunes = [iTunesProxy sharedProxy];
 		PlayerProxy * Spotify = [SpotifyProxy sharedProxy];
 		
